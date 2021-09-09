@@ -47,24 +47,24 @@ public class ChatServer implements TCPConnectionObserver {
     }
 
     @Override
-    public void onConnection(TCPConnection connection) {
+    public synchronized void onConnection(TCPConnection connection) {
         connections.add(connection);
         sendMessageToAllUsers(SYSTEM_MESSAGE_DELIMITER_BEGIN + CONNECTED_CLIENT_MESSAGE
                 + connection + SYSTEM_MESSAGE_DELIMITER_END);
     }
 
     @Override
-    public void onReceiveString(TCPConnection connection, String string) {
+    public synchronized void onReceiveString(TCPConnection connection, String string) {
         sendMessageToAllUsers(USER_MESSAGE_DELIMITER + string);
     }
 
     @Override
-    public void onException(TCPConnection connection, Exception exception) {
+    public synchronized void onException(TCPConnection connection, Exception exception) {
         log.error(TCP_EXCEPTION_LOG_MESSAGE, exception);
     }
 
     @Override
-    public void onDisconnect(TCPConnection connection) {
+    public synchronized void onDisconnect(TCPConnection connection) {
         connections.remove(connection);
         sendMessageToAllUsers(SYSTEM_MESSAGE_DELIMITER_BEGIN + DISCONNECTED_CLIENT_MESSAGE
                 + connection + SYSTEM_MESSAGE_DELIMITER_END);
